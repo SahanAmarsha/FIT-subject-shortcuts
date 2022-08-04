@@ -1,4 +1,4 @@
-package com.example.fit_shortcuts
+package com.sahan.test_pwa
 
 import io.flutter.embedding.android.FlutterActivity
 

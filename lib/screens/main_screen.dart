@@ -1,101 +1,87 @@
-import 'dart:convert';
-
-import 'package:fit_shortcuts/components/subject_tile.dart';
-import 'package:fit_shortcuts/config/it_modules.dart';
-import 'package:fit_shortcuts/config/yes_on_alert.dart';
-import 'package:fit_shortcuts/constants/constants.dart';
-import 'package:fit_shortcuts/constants/shared_preferences_constants.dart';
-import 'package:fit_shortcuts/dialog/info_dialog.dart';
-import 'package:fit_shortcuts/models/models.dart';
-import 'package:fit_shortcuts/screens/hidden_subject_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_pwa/components/subject_widget.dart';
+import 'package:test_pwa/config/my_modules.dart';
+import 'package:test_pwa/constants/constants.dart';
+import 'package:test_pwa/models/models.dart';
+import 'package:test_pwa/screens/archived_screen.dart';
+
+import '../components/yes_on_alert.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key? key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final String semCode = "L3_S1";
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final String semCode = "L4_S1";
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<TempHolder>(
-      future: _loadModules(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Scaffold(body: Center(child: Text(snapshot.error.toString())));
-        }
-        if (!snapshot.hasData) {
-          return Scaffold();
-        } else {
-          final data = snapshot.data!.module;
-          final sharedPreferences = snapshot.data!.sharedPreferences;
-          final list = _loadOrderedList(data.three.one, sharedPreferences);
-          return Scaffold(
-            appBar: AppBar(
-              title: Text("Shortcuts"),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 30.0),
-                  child: IconButton(
-                    onPressed: _onPressedInfo,
-                    icon: Icon(Icons.info),
-                  ),
-                ),
-                IconButton(
-                  onPressed: () =>
-                      _onTapHiddenList(context, data, sharedPreferences),
-                  icon: Icon(Icons.archive_outlined),
-                  tooltip: "Archived Subjects",
-                ),
-              ],
+        future: _loadModules(),
+        builder: (context, snapshot) {
+          if(snapshot.hasError) {
+            return Scaffold(body: Center(
+              child: Text(snapshot.error.toString()),
+            ));
+          }
+          if(!snapshot.hasData) {
+            return const Scaffold(body: Center(
+              child: Text('Could not load modules'),
+            ));
+          } else {
+            final data = snapshot.data!.module;
+            final sharedPreferences = snapshot.data!.sharedPreferences;
+            return Scaffold(
+                appBar: AppBar(
+              title: const Text("L4S1 Module Shortcuts"),
+               actions: [
+                 IconButton(
+                   onPressed: () =>
+                       _onTapHiddenList(context, data, sharedPreferences),
+                   icon: const Icon(Icons.archive_outlined),
+                   tooltip: "Archived Subjects",
+                 ),
+               ],
             ),
             body: ReorderableListView(
               padding: kDefaultPadding,
               buildDefaultDragHandles: false,
-              onReorder: (o, n) =>
-                  _onChangeOrder(o, n, data.three.one, sharedPreferences),
-              children: loadSubjects(data.three.one, sharedPreferences),
-            ),
-          );
+              onReorder: (o, n) => _onChangeOrder(o, n, data.four.one, sharedPreferences),
+              children: loadSubjects(data.four.one, sharedPreferences),
+            ),);
+          }
         }
-      },
     );
   }
 
   List<Widget> loadSubjects(
       List<Subject> subjects, SharedPreferences sharedPreferences) {
     final hiddenList = sharedPreferences
-            .getStringList(SharedPreferencesConstants.hiddenSubject) ??
+        .getStringList(SharedPreferencesConstants.hiddenSubject) ??
         [];
     final list = _loadOrderedList(subjects, sharedPreferences);
     int index = 0;
     return list
         .where((element) => !hiddenList.contains(element))
         .map((e) => subjects.singleWhere((element) => element.code == e))
-        .map((e) => SubjectTile(
-              e,
-              key: ValueKey(e.code),
-              onPressArchived: _onPressArchived,
-              index: index++,
-            ))
+        .map((e) => SubjectWidget(
+      subject: e,
+      key: ValueKey(e.code),
+      onPressArchived: _onPressArchived,
+      index: index++,
+    ))
         .toList();
   }
 
   List<String> _loadOrderedList(
-    List<Subject> subjects,
-    SharedPreferences sharedPreferences,
-  ) {
+      List<Subject> subjects,
+      SharedPreferences sharedPreferences,
+      ) {
     var orderedList = sharedPreferences
         .getStringList(SharedPreferencesConstants.orderedSubjects(semCode));
     if (orderedList == null) {
@@ -106,40 +92,41 @@ class _MainScreenState extends State<MainScreen> {
     return orderedList;
   }
 
-  Future<TempHolder> _loadModules() async {
-    return TempHolder(kItModules, await SharedPreferences.getInstance());
-  }
-
-  void _onTapHiddenList(BuildContext context, ConfigModule configModule,
-      SharedPreferences sharedPreferences) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => HiddenSubjectScreen(
-          sharedPreferences: sharedPreferences,
-          configModule: configModule,
-          onUnArchived: () => setState(() {}),
-          semCode: semCode,
-        ),
-      ),
-    );
+  void _onChangeOrder(
+      int oldIndex,
+      int newIndex,
+      List<Subject> subjects,
+      SharedPreferences sharedPreferences,
+      ) {
+    final orderedList = _loadOrderedList(subjects, sharedPreferences);
+    if (oldIndex < newIndex) {
+      // removing the item at oldIndex will shorten the list by 1.
+      newIndex -= 1;
+    }
+    final element = orderedList.removeAt(oldIndex);
+    orderedList.insert(newIndex, element);
+    setState(() {
+      sharedPreferences.setStringList(
+          SharedPreferencesConstants.orderedSubjects(semCode), orderedList);
+    });
   }
 
   _onPressArchived(bool isArchived, Subject subject) async {
     final confirm = (await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return YesNoAlert(
-              title: 'Confirm',
-              message: 'Do you want to archive ${subject.name}?',
-              yesOnPressed: () => Navigator.pop(context, true),
-            );
-          },
-        )) ??
+      context: context,
+      builder: (context) {
+        return YesNoAlert(
+          title: 'Confirm',
+          message: 'Do you want to archive ${subject.name}?',
+          yesOnPressed: () => Navigator.pop(context, true),
+        );
+      },
+    )) ??
         false;
     if (confirm) {
       final sharedPreferences = await SharedPreferences.getInstance();
       final hiddenSubject = sharedPreferences
-              .getStringList(SharedPreferencesConstants.hiddenSubject) ??
+          .getStringList(SharedPreferencesConstants.hiddenSubject) ??
           [];
       setState(() {
         hiddenSubject.add(subject.code);
@@ -157,32 +144,22 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void _onPressedInfo() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return InfoDialog();
-      },
+  void _onTapHiddenList(BuildContext context, ConfigModule configModule,
+      SharedPreferences sharedPreferences) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ArchivedSubjectsScreen(
+          sharedPreferences: sharedPreferences,
+          configModule: configModule,
+          onUnArchived: () => setState(() {}),
+          semCode: semCode,
+        ),
+      ),
     );
   }
 
-  void _onChangeOrder(
-    int oldIndex,
-    int newIndex,
-    List<Subject> subjects,
-    SharedPreferences sharedPreferences,
-  ) {
-    final orderedList = _loadOrderedList(subjects, sharedPreferences);
-    if (oldIndex < newIndex) {
-      // removing the item at oldIndex will shorten the list by 1.
-      newIndex -= 1;
-    }
-    final element = orderedList.removeAt(oldIndex);
-    orderedList.insert(newIndex, element);
-    setState(() {
-      sharedPreferences.setStringList(
-          SharedPreferencesConstants.orderedSubjects(semCode), orderedList);
-    });
+  Future<TempHolder> _loadModules() async {
+    return TempHolder(myModules, await SharedPreferences.getInstance());
   }
 }
 

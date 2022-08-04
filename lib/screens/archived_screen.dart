@@ -1,61 +1,66 @@
-import 'package:fit_shortcuts/components/subject_tile.dart';
-import 'package:fit_shortcuts/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:fit_shortcuts/constants/constants.dart';
+import 'package:test_pwa/components/subject_widget.dart';
 
-class HiddenSubjectScreen extends StatefulWidget {
+import '../constants/paddings.dart';
+import '../constants/shared_preferences_constants.dart';
+import '../models/models.dart';
+
+class ArchivedSubjectsScreen extends StatefulWidget {
   final SharedPreferences sharedPreferences;
   final ConfigModule configModule;
   final VoidCallback onUnArchived;
   final String semCode;
-  const HiddenSubjectScreen({
-    Key? key,
-    required this.sharedPreferences,
-    required this.configModule,
-    required this.onUnArchived,
-    required this.semCode,
-  }) : super(key: key);
+
+  const ArchivedSubjectsScreen(
+      {Key? key,
+      required this.sharedPreferences,
+      required this.configModule,
+      required this.onUnArchived,
+      required this.semCode})
+      : super(key: key);
 
   @override
-  _HiddenSubjectScreenState createState() => _HiddenSubjectScreenState();
+  State<ArchivedSubjectsScreen> createState() => _ArchivedSubjectsScreenState();
 }
 
-class _HiddenSubjectScreenState extends State<HiddenSubjectScreen> {
+class _ArchivedSubjectsScreenState extends State<ArchivedSubjectsScreen> {
+
   @override
   Widget build(BuildContext context) {
     final subjects = widget.sharedPreferences
-            .getStringList(SharedPreferencesConstants.hiddenSubject) ??
+        .getStringList(SharedPreferencesConstants.hiddenSubject) ??
         [];
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Hidden Subjects"),
       ),
       body: subjects.length > 0
           ? ListView(
-              padding: kDefaultPadding,
-              children: (subjects).map(
-                (e) {
-                  final subject = widget.configModule.getSubject(e);
-                  if (subject == null)
-                    return SizedBox.shrink();
-                  else
-                    return SubjectTile(
-                      subject,
-                      isArchived: true,
-                      onPressArchived: _onPressArchived,
-                    );
-                },
-              ).toList(),
-            )
-          : Center(child: Text("There is no hidden subject")),
+        padding: kDefaultPadding,
+        children: (subjects).map(
+              (e) {
+            final subject = widget.configModule.getSubject(e);
+            if (subject == null) {
+              return const SizedBox.shrink();
+            } else {
+              return SubjectWidget(
+                isArchived: true,
+                onPressArchived: _onPressArchived, subject: subject,
+              );
+            }
+          },
+        ).toList(),
+      )
+          : const Center(child: Text("There is no hidden subject")),
     );
   }
 
   _onPressArchived(bool isArchived, Subject subject) async {
     final sharedPreferences = await SharedPreferences.getInstance();
     final hiddenSubject = sharedPreferences
-            .getStringList(SharedPreferencesConstants.hiddenSubject) ??
+        .getStringList(SharedPreferencesConstants.hiddenSubject) ??
         [];
     setState(() {
       hiddenSubject.remove(subject.code);
