@@ -61,6 +61,9 @@ class SubjectWidget extends StatelessWidget {
   }
 
   void _onTap() async {
-    launchUrl(Uri(path: subject.url));
+    var uri = Uri.parse(subject.url);
+    if(await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
   }
 }
