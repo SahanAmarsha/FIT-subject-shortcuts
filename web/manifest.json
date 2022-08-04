@@ -1,11 +1,11 @@
 {
-    "name": "FIT Subject Shortcuts",
-    "short_name": "FIT Subject",
+    "name": "FIT My Modules",
+    "short_name": "FIT My Modules",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Shortcuts for FIT Moodle subjects. Install PWA for offline use",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -4,17 +4,18 @@ part 'models.g.dart';
 
 @JsonSerializable()
 class ConfigModule {
-  @JsonKey(name: '3')
-  final Level three;
+  @JsonKey(name: '4')
+  final Level four;
 
-  const ConfigModule(this.three);
+  const ConfigModule(this.four);
 
   factory ConfigModule.fromJson(Map<String, dynamic> json) =>
       _$ConfigModuleFromJson(json);
+
   Map<String, dynamic> toJson() => _$ConfigModuleToJson(this);
 
   Subject? getSubject(String code) {
-    return _getSubject(three.one, code);
+    return _getSubject(four.one, code);
   }
 
   Subject? _getSubject(List<Subject> list, String code) {
@@ -37,6 +38,7 @@ class Level {
   const Level(this.one, this.two);
 
   factory Level.fromJson(Map<String, dynamic> json) => _$LevelFromJson(json);
+
   Map<String, dynamic> toJson() => _$LevelToJson(this);
 }
 
@@ -46,10 +48,12 @@ class Subject {
   final String name;
   final String url;
   final SubjectMode mode;
+
   const Subject(this.code, this.mode, this.name, this.url);
 
   factory Subject.fromJson(Map<String, dynamic> json) =>
       _$SubjectFromJson(json);
+
   Map<String, dynamic> toJson() => _$SubjectToJson(this);
 }
 

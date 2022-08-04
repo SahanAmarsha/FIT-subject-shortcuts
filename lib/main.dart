@@ -1,32 +1,25 @@
-import 'dart:convert';
-
-import 'package:fit_shortcuts/screens/main_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:test_pwa/screens/main_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'FIT Subject Shortcuts', 
+      title: 'L4S1 Module Shortcuts',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
-      home: Banner(
-        location: BannerLocation.topEnd,
-        message: 'FIT 18',
-        textStyle: TextStyle(color: Colors.black),
-        color: Colors.amber,
-        child: MainScreen(), 
-      ),
+      home: const MainScreen(),
     );
   }
 }
