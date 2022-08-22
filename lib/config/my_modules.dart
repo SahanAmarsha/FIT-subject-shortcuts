@@ -20,18 +20,6 @@ const myModules = ConfigModule(Level([
       "https://online.uom.lk/course/view.php?id=18545"
   ),
   Subject(
-      "CM4340",
-      SubjectMode.E,
-      "Natural Language Processing",
-      "https://online.uom.lk/course/view.php?id=18526"
-  ),
-  Subject(
-      "IN4620",
-      SubjectMode.E,
-      "Digital Image Processing",
-      "https://online.uom.lk/course/view.php?id=18535"
-  ),
-  Subject(
       "IN4700",
       SubjectMode.E,
       "Cluster Computing",
@@ -44,28 +32,10 @@ const myModules = ConfigModule(Level([
       "https://online.uom.lk/course/view.php?id=18538"
   ),
   Subject(
-      "IN4300",
-      SubjectMode.E,
-      "Embedded Systems",
-      "https://online.uom.lk/course/view.php?id=18532"
-  ),
-  Subject(
       "IN4400",
       SubjectMode.E,
       "Data Mining & Data Warehousing",
       "https://online.uom.lk/course/view.php?id=18533"
-  ),
-  Subject(
-      "IN4720",
-      SubjectMode.E,
-      "Geographic Information Systems",
-      "https://online.uom.lk/course/view.php?id=18540"
-  ),
-  Subject(
-      "CM4140",
-      SubjectMode.E,
-      "Operational Research",
-      "https://online.uom.lk/course/view.php?id=18518"
   ),
   Subject(
       "CM4310",
@@ -74,46 +44,10 @@ const myModules = ConfigModule(Level([
       "https://online.uom.lk/course/view.php?id=18520"
   ),
   Subject(
-      "CM4320",
-      SubjectMode.E,
-      "Complex Systems & Agent Technology",
-      "https://online.uom.lk/course/view.php?id=18522"
-  ),
-  Subject(
-      "CM4330",
-      SubjectMode.E,
-      "Semantic Web and Ontological Modelling",
-      "https://online.uom.lk/course/view.php?id=18524"
-  ),
-  Subject(
-      "CM4360",
-      SubjectMode.E,
-      "Robotics",
-      "https://online.uom.lk/course/view.php?id=18528"
-  ),
-  Subject(
       "CM4370",
       SubjectMode.E,
       "Machine Learning and Pattern Recognition",
       "https://online.uom.lk/course/view.php?id=18530"
-  ),
-  Subject(
-      "IS4300",
-      SubjectMode.E,
-      "Marketing Management",
-      "https://online.uom.lk/course/view.php?id=18547"
-  ),
-  Subject(
-      "IS4330",
-      SubjectMode.E,
-      "Supply Chain Management",
-      "https://online.uom.lk/course/view.php?id=18549"
-  ),
-  Subject(
-      "IS4340",
-      SubjectMode.E,
-      "Innovation Management",
-      "https://online.uom.lk/course/view.php?id=18516"
   ),
   Subject(
       "IS4400",
